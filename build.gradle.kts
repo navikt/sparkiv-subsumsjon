@@ -7,6 +7,10 @@ group = "no.nav.helse"
 dependencies {
     implementation(libs.kafka)
     implementation(libs.naisful.app)
+    implementation(libs.bundles.db)
+    implementation(libs.bundles.logging)
+    testImplementation(libs.tc.kafka)
+    testImplementation(libs.tc.pg)
     testImplementation(kotlin("test"))
 }
 
