@@ -39,4 +39,3 @@ spec:
         tier: db-custom-1-3840
         databases:
           - name: sparkiv-subsumsjon
-            envVarPrefix: DATABASE

@@ -11,11 +11,12 @@ import java.time.Duration
 import javax.sql.DataSource
 
 internal class DataSourceBuilder(env: Map<String, String>) {
-    private val databaseHost: String = requireNotNull(env["DATABASE_HOST"]) { "host må settes" }
-    private val databasePort: String = requireNotNull(env["DATABASE_PORT"]) { "port må settes" }
-    private val databaseName: String = requireNotNull(env["DATABASE_DATABASE"]) { "databasenavn må settes" }
-    private val databaseUsername: String = requireNotNull(env["DATABASE_USERNAME"]) { "brukernavn må settes" }
-    private val databasePassword: String = requireNotNull(env["DATABASE_PASSWORD"]) { "passord må settes" }
+    private val prefix = "NAIS_DATABASE_SPARKIV_SUBSUMSJON_SPARKIV_SUBSUMSJON"
+    private val databaseHost: String = requireNotNull(env["${prefix}_HOST"]) { "host må settes" }
+    private val databasePort: String = requireNotNull(env["${prefix}_PORT"]) { "port må settes" }
+    private val databaseName: String = requireNotNull(env["${prefix}_DATABASE"]) { "databasenavn må settes" }
+    private val databaseUsername: String = requireNotNull(env["${prefix}_USERNAME"]) { "brukernavn må settes" }
+    private val databasePassword: String = requireNotNull(env["${prefix}_PASSWORD"]) { "passord må settes" }
 
     private val dbUrl =
         String.format(
