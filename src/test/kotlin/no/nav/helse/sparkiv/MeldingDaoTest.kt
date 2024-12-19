@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.random.Random
 import kotlin.test.assertEquals
 
 class MeldingDaoTest {
@@ -27,7 +28,7 @@ class MeldingDaoTest {
 
         val dao = MeldingDao(database.dataSource)
         dao.lagreMelding(fødselsnummer, id, tidsstempel, eventName, melding)
-        assertInnholdIDb(
+        assertMeldingIDb(
             forventetId = id,
             forventetFødselsnummer = fødselsnummer,
             forventetEventName = eventName,
@@ -36,7 +37,23 @@ class MeldingDaoTest {
         )
     }
 
-    private fun assertInnholdIDb(
+    @Test
+    fun `lagre mangelfull melding`() {
+        @Language("JSON")
+        val melding = """{"foo": "bar"}"""
+        val partisjon = Random.nextInt()
+        val offset = Random.nextLong()
+
+        val dao = MeldingDao(database.dataSource)
+        dao.lagreMangelfullMelding(partisjon, offset, melding)
+        assertMangelfullMeldingIDb(
+            forventetPartisjon = partisjon,
+            forventetOffset = offset,
+            forventetJson = melding
+        )
+    }
+
+    private fun assertMeldingIDb(
         forventetId: UUID,
         forventetFødselsnummer: String,
         forventetEventName: String,
@@ -69,6 +86,33 @@ class MeldingDaoTest {
         assertEquals(forventetTidsstempel, result?.tidsstempel)
         assertEquals(forventetEventName, result?.eventName)
         assertEquals(forventetJson, result?.json)
+    }
+
+    private fun assertMangelfullMeldingIDb(
+        forventetPartisjon: Int,
+        forventetOffset: Long,
+        forventetJson: String,
+    ) {
+        data class Result(
+            val partisjon: Int,
+            val offset: Long,
+            val json: String
+        )
+        @Language("PostgreSQL")
+        val query = "SELECT partisjon, commit_offset, json FROM mangelfull_melding WHERE partisjon = :partisjon AND commit_offset = :commit_offset"
+        val result = sessionOf(database.dataSource).use { session ->
+            session.run(queryOf(query, mapOf("partisjon" to forventetPartisjon, "commit_offset" to forventetOffset)).map { row ->
+                Result(
+                    partisjon = row.int("partisjon"),
+                    offset = row.long("commit_offset"),
+                    json = row.string("json")
+                )
+            }.asList)
+        }
+        assertEquals(1, result.size)
+        assertEquals(forventetPartisjon, result.single().partisjon)
+        assertEquals(forventetOffset, result.single().offset)
+        assertEquals(forventetJson, result.single().json    )
     }
 
     private val database =

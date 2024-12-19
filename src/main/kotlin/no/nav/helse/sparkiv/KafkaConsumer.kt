@@ -28,10 +28,13 @@ class KafkaConsumer(
                 consumer.poll(running::get) { records ->
                     records.forEach { record ->
                         val jsonNode = jacksonObjectMapper().readTree(record.value())
-                        val fødselsnummer = jsonNode["fodselsnummer"]?.asText() ?: return@forEach
-                        val id = jsonNode["id"].asUuid()
-                        val eventName = jsonNode["event_name"]?.asText() ?: "ukjent"
-                        val tidsstempel = jsonNode["tidsstempel"].asLocalDateTime()
+                        val fødselsnummer = jsonNode["fodselsnummer"]?.asText()
+                        val id = jsonNode["id"]?.asUuid()
+                        val eventName = jsonNode["eventName"]?.asText()
+                        val tidsstempel = jsonNode["tidsstempel"]?.asLocalDateTime()
+                        if (fødselsnummer == null || id == null || eventName == null || tidsstempel == null) {
+                            return@forEach meldingRepository.lagreMangelfullMelding(record.partition(), record.offset(), record.value())
+                        }
                         meldingRepository.lagreMelding(fødselsnummer, id, tidsstempel, eventName, record.value())
                     }
                 }
