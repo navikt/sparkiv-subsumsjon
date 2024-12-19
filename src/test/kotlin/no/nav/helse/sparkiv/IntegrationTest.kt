@@ -4,6 +4,9 @@ import com.github.navikt.tbd_libs.kafka.Config
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotliquery.queryOf
@@ -14,7 +17,8 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.flywaydb.core.Flyway
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
@@ -24,7 +28,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
-import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 open class IntegrationTest {
     private val kafka = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
@@ -36,28 +40,33 @@ open class IntegrationTest {
     )
     private val factory = ConsumerProducerFactory(kafkaConfig)
 
-    @Disabled
+    private val scope = CoroutineScope(Dispatchers.IO)
+
+    @AfterEach
+    fun tearDown() {
+        stoppAppen()
+    }
+
     @Test
     fun integrationTest() {
         val topic = "topic.v1"
-        runBlocking {
-            launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic), kafkaConfig = kafkaConfig) }
+        runBlocking(scope.coroutineContext) {
+            scope.launch {
+                logger.info("starting app")
+                app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic), kafkaConfig = kafkaConfig)
+            }
+            delay(1.seconds)
             factory.createProducer().use {
                 val randomUUID = UUID.randomUUID()
                 logger.info("Producing message with id=${randomUUID}")
-                it.send(ProducerRecord(topic,"""{"fodselsnummer": "$randomUUID"}"""))
+                it.send(ProducerRecord(topic, """{"fodselsnummer": "$randomUUID"}"""))
             }
+            delay(1.seconds)
+            logger.info("asserting")
             assertInnholdIDb()
-            val client = HttpClient.newHttpClient()
-            client.send(
-                HttpRequest
-                    .newBuilder()
-                    .uri(URI.create("http://localhost:8080/stop"))
-                    .GET()
-                    .build(),
-                HttpResponse.BodyHandlers.ofString()
-            )
+            logger.info("asserted")
         }
+        logger.info("runBlocking exited")
     }
 
     private fun assertInnholdIDb() {
@@ -105,6 +114,19 @@ open class IntegrationTest {
                     .migrate()
             }
         }
+
+    private fun stoppAppen() {
+        val client = HttpClient.newHttpClient()
+        logger.info("Calling /stop")
+        client.send(
+            HttpRequest
+                .newBuilder()
+                .uri(URI.create("http://localhost:8080/stop"))
+                .GET()
+                .build(),
+            HttpResponse.BodyHandlers.ofString()
+        )
+    }
 
     private class LocalKafkaConfig(private val connectionProperties: Properties) : Config {
         override fun producerConfig(properties: Properties) = properties.apply {
