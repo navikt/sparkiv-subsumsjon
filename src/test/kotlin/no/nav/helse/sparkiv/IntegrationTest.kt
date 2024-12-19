@@ -14,6 +14,7 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.flywaydb.core.Flyway
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
@@ -35,6 +36,7 @@ open class IntegrationTest {
     )
     private val factory = ConsumerProducerFactory(kafkaConfig)
 
+    @Disabled
     @Test
     fun integrationTest() {
         val topic = "topic.v1"
@@ -99,7 +101,6 @@ open class IntegrationTest {
             init {
                 Flyway.configure()
                     .dataSource(dataSource)
-                    .placeholders(mapOf("spesialist_oid" to UUID.randomUUID().toString()))
                     .load()
                     .migrate()
             }

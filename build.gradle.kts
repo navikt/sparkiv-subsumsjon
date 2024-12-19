@@ -20,3 +20,24 @@ tasks.test {
 kotlin {
     jvmToolchain(21)
 }
+
+tasks {
+    jar {
+        archiveBaseName.set("app")
+
+        manifest {
+            attributes["Main-Class"] = "no.nav.helse.sparkiv.AppKt"
+            attributes["Class-Path"] =
+                configurations.runtimeClasspath.get().joinToString(separator = " ") {
+                    it.name
+                }
+        }
+
+        doLast {
+            configurations.runtimeClasspath.get().forEach {
+                val file = File("${layout.buildDirectory.get()}/libs/${it.name}")
+                if (!file.exists()) it.copyTo(file)
+            }
+        }
+    }
+}
