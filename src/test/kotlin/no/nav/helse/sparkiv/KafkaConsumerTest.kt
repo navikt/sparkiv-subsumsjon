@@ -5,9 +5,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -28,7 +30,7 @@ class KafkaConsumerTest {
 
         val repo = object : MeldingRepository {
             val meldinger = mutableMapOf<String, String>()
-            override fun lagreMelding(fødselsnummer: String, json: String) {
+            override fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: LocalDateTime, eventName: String, json: String) {
                 meldinger[fødselsnummer] = json
                 consumer.stop()
             }
@@ -38,10 +40,18 @@ class KafkaConsumerTest {
                 consumer.consume(repo)
             }
             factory.createProducer().use { producer ->
-                producer.send(ProducerRecord(topic, """{"fodselsnummer": "foobar"}"""))
+                producer.send(ProducerRecord(topic, json))
             }
         }
 
         assertEquals(1, repo.meldinger.size)
     }
+
+    @Language("JSON")
+    private val json = """{
+        "id": "${UUID.randomUUID()}",
+        "fodselsnummer": "foobar",
+        "tidsstempel": "${LocalDateTime.now()}",
+        "event_name": "subsumsjon"
+    }"""
 }

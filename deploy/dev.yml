@@ -43,3 +43,5 @@ spec:
   env:
     - name: KAFKA_TOPIC
       value: flex.omrade-helse-etterlevelse
+    - name: CONSUMER_GROUP_ID
+      value: sparkiv-subsumsjon-v2

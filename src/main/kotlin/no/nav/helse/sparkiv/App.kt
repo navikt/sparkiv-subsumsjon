@@ -12,7 +12,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.slf4j.LoggerFactory
 import java.util.*
 
-private const val groupId = "sparkiv-subsumsjon-v1"
 private val defaultConsumerProperties = Properties().apply {
     this[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
 }
@@ -27,6 +26,7 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
     val factory = ConsumerProducerFactory(kafkaConfig)
     val dataSourceBuilder = DataSourceBuilder(env)
     val kafkaTopic = env.getValue("KAFKA_TOPIC")
+    val groupId = env.getValue("CONSUMER_GROUP_ID")
     val consumer = KafkaConsumer(groupId, kafkaTopic, defaultConsumerProperties, factory)
     val app = naisApp(
         meterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT),

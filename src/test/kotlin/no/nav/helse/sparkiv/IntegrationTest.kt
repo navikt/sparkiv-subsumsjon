@@ -41,7 +41,7 @@ open class IntegrationTest {
     fun integrationTest() {
         val topic = "topic.v1"
         runBlocking {
-            launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic), kafkaConfig = kafkaConfig) }
+            launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic, "CONSUMER_GROUP_ID" to "local-consumer"), kafkaConfig = kafkaConfig) }
             factory.createProducer().use {
                 val randomUUID = UUID.randomUUID()
                 logger.info("Producing message with id=${randomUUID}")

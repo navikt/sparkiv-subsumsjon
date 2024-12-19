@@ -1,9 +1,11 @@
 package no.nav.helse.sparkiv
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import com.github.navikt.tbd_libs.kafka.poll
 import org.apache.kafka.common.errors.WakeupException
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -27,7 +29,10 @@ class KafkaConsumer(
                     records.forEach { record ->
                         val jsonNode = jacksonObjectMapper().readTree(record.value())
                         val fødselsnummer = jsonNode["fodselsnummer"]?.asText() ?: return@forEach
-                        meldingRepository.lagreMelding(fødselsnummer, record.value())
+                        val id = jsonNode["id"].asUuid()
+                        val eventName = jsonNode["event_name"]?.asText() ?: "ukjent"
+                        val tidsstempel = jsonNode["tidsstempel"].asLocalDateTime()
+                        meldingRepository.lagreMelding(fødselsnummer, id, tidsstempel, eventName, record.value())
                     }
                 }
             } catch (err: WakeupException) {
@@ -41,4 +46,7 @@ class KafkaConsumer(
         logger.info("Received shutdown signal. Waiting 10 seconds for app to shutdown gracefully")
         consumer.wakeup()
     }
+
+    private fun JsonNode.asLocalDateTime() = LocalDateTime.parse(asText())
+    private fun JsonNode.asUuid() = UUID.fromString(asText())
 }
