@@ -39,6 +39,7 @@ spec:
         tier: db-custom-1-3840
         databases:
           - name: sparkiv-subsumsjon
+            envVarPrefix: DATABASE
   env:
     - name: KAFKA_TOPIC
       value: flex.omrade-helse-etterlevelse
