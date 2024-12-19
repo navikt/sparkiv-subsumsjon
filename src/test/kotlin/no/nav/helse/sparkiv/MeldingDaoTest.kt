@@ -19,7 +19,7 @@ class MeldingDaoTest {
     fun `lagre melding`() {
         val fødselsnummer = "12345678910"
         val id = UUID.randomUUID()
-        val tidsstempel = LocalDateTime.now()
+        val tidsstempel = LocalDateTime.now().withNano(0)
         val eventName = "subsumsjon"
 
         @Language("JSON")
