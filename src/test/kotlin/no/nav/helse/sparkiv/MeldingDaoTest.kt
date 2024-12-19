@@ -9,7 +9,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertEquals
@@ -20,7 +20,7 @@ class MeldingDaoTest {
     fun `lagre melding`() {
         val fødselsnummer = "12345678910"
         val id = UUID.randomUUID()
-        val tidsstempel = LocalDateTime.now().withNano(0)
+        val tidsstempel = ZonedDateTime.now().withNano(0)
         val eventName = "subsumsjon"
 
         @Language("JSON")
@@ -57,13 +57,13 @@ class MeldingDaoTest {
         forventetId: UUID,
         forventetFødselsnummer: String,
         forventetEventName: String,
-        forventetTidsstempel: LocalDateTime,
+        forventetTidsstempel: ZonedDateTime,
         forventetJson: String,
     ) {
         data class Result(
             val id: UUID,
             val fødselsnummer: String,
-            val tidsstempel: LocalDateTime,
+            val tidsstempel: ZonedDateTime,
             val eventName: String,
             val json: String
         )
@@ -74,7 +74,7 @@ class MeldingDaoTest {
                 Result(
                     id = UUID.fromString(row.string("id")),
                     fødselsnummer = row.string("fødselsnummer"),
-                    tidsstempel = row.localDateTime("tidsstempel"),
+                    tidsstempel = row.zonedDateTime("tidsstempel"),
                     eventName = row.string("event_name"),
                     json = row.string("json")
                 )

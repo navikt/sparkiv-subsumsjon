@@ -6,6 +6,9 @@ import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import com.github.navikt.tbd_libs.kafka.poll
 import org.apache.kafka.common.errors.WakeupException
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeParseException
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -13,9 +16,9 @@ class KafkaConsumer(
     groupId: String,
     private val topic: String,
     properties: Properties,
-    factory: ConsumerProducerFactory
+    factory: ConsumerProducerFactory,
 ) {
-    private val running = AtomicBoolean(false)
+    private val running: AtomicBoolean = AtomicBoolean(false)
     private val consumer = factory.createConsumer(groupId, properties)
 
     fun consume(meldingRepository: MeldingRepository) {
@@ -31,7 +34,7 @@ class KafkaConsumer(
                         val fødselsnummer = jsonNode["fodselsnummer"]?.asText()
                         val id = jsonNode["id"]?.asUuid()
                         val eventName = jsonNode["eventName"]?.asText()
-                        val tidsstempel = jsonNode["tidsstempel"]?.asLocalDateTime()
+                        val tidsstempel = jsonNode["tidsstempel"]?.asZonedDateTime()
                         if (fødselsnummer == null || id == null || eventName == null || tidsstempel == null) {
                             return@forEach meldingRepository.lagreMangelfullMelding(record.partition(), record.offset(), record.value())
                         }
@@ -39,17 +42,21 @@ class KafkaConsumer(
                     }
                 }
             } catch (err: WakeupException) {
-                logger.info("Exiting consumer after ${if (!running.get()) "receiving shutdown signal" else "being interrupted" }")
+                logger.info("Exiting consumer after ${if (!running.get()) "receiving stop signal" else "being interrupted" }")
             }
         }
     }
 
     fun stop() {
-        if (!running.getAndSet(false)) return logger.info("Already in process of shutting down")
-        logger.info("Received shutdown signal. Waiting 10 seconds for app to shutdown gracefully")
+        if (!running.getAndSet(false)) return logger.info("Already in process of stopping consumer.")
+        logger.info("Received stop signal. Stopping consumer.")
         consumer.wakeup()
     }
 
-    private fun JsonNode.asLocalDateTime() = LocalDateTime.parse(asText())
+    private fun JsonNode.asZonedDateTime() = try {
+        ZonedDateTime.parse(asText())
+    } catch (err: DateTimeParseException) {
+        LocalDateTime.parse(asText()).atZone(ZoneId.systemDefault())
+    }
     private fun JsonNode.asUuid() = UUID.fromString(asText())
 }

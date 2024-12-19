@@ -28,8 +28,8 @@ internal class DataSourceBuilder(env: Map<String, String>) {
     private val hikariMigrationConfig =
         HikariConfig().apply {
             jdbcUrl = dbUrl
-            initializationFailTimeout = Duration.ofMinutes(1).toMillis()
-            connectionTimeout = Duration.ofMinutes(1).toMillis()
+            initializationFailTimeout = Duration.ofSeconds(10).toMillis()
+            connectionTimeout = Duration.ofSeconds(10).toMillis()
             maximumPoolSize = 2
         }
 

@@ -3,12 +3,12 @@ package no.nav.helse.sparkiv
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import org.intellij.lang.annotations.Language
-import java.time.LocalDateTime
-import java.util.UUID
+import java.time.ZonedDateTime
+import java.util.*
 import javax.sql.DataSource
 
 interface MeldingRepository {
-    fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: LocalDateTime, eventName: String, json: String)
+    fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: ZonedDateTime, eventName: String, json: String)
     fun lagreMangelfullMelding(partisjon: Int, offset: Long, json: String)
 }
 
@@ -18,7 +18,7 @@ class MeldingDao(
     override fun lagreMelding(
         fødselsnummer: String,
         id: UUID,
-        tidsstempel: LocalDateTime,
+        tidsstempel: ZonedDateTime,
         eventName: String,
         json: String
     ) {

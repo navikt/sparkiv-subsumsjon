@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -30,7 +31,7 @@ class KafkaConsumerTest {
     private val repo = object : MeldingRepository {
         val meldinger = mutableMapOf<String, String>()
         val mangelfulleMeldinger = mutableListOf<String>()
-        override fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: LocalDateTime, eventName: String, json: String) {
+        override fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: ZonedDateTime, eventName: String, json: String) {
             meldinger[fødselsnummer] = json
             consumer.stop()
         }
@@ -59,6 +60,20 @@ class KafkaConsumerTest {
             }
             factory.createProducer().use { producer ->
                 producer.send(ProducerRecord(topic, komplettJson))
+            }
+        }
+
+        assertEquals(1, repo.meldinger.size)
+    }
+
+    @Test
+    fun `lagrer komplette meldinger med zoned timestamp fra kafka`() {
+        runBlocking {
+            launch {
+                consumer.consume(repo)
+            }
+            factory.createProducer().use { producer ->
+                producer.send(ProducerRecord(topic, komplettJsonMedZonedTimestamp))
             }
         }
 
@@ -126,6 +141,14 @@ class KafkaConsumerTest {
         "id": "${UUID.randomUUID()}",
         "fodselsnummer": "foobar",
         "tidsstempel": "${LocalDateTime.now()}",
+        "eventName": "subsumsjon"
+    }"""
+
+    @Language("JSON")
+    private val komplettJsonMedZonedTimestamp = """{
+        "id": "${UUID.randomUUID()}",
+        "fodselsnummer": "foobar",
+        "tidsstempel": "${ZonedDateTime.now()}",
         "eventName": "subsumsjon"
     }"""
 
