@@ -19,6 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private val defaultConsumerProperties = Properties().apply {
     this[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+    this[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
 }
 
 internal val logger = LoggerFactory.getLogger("no.nav.helse.sparkiv")
