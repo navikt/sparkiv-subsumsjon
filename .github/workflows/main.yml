@@ -4,12 +4,12 @@ on:
     push:
         branches:
             - main
+permissions:
+    contents: read
+    id-token: write
 
 jobs:
     build:
-        permissions:
-            contents: read
-            id-token: write
         name: Bygg image
         runs-on: ubuntu-latest
         steps:
@@ -43,9 +43,6 @@ jobs:
             image: ${{ steps.docker-build-push.outputs.image }}
 
     deployDev:
-        permissions:
-            contents: read
-            id-token: write
         name: Deploy to dev
         needs: [build]
         runs-on: ubuntu-latest
