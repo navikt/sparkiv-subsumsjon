@@ -22,6 +22,9 @@ spec:
   prometheus:
     enabled: true
     path: /metrics
+  replicas:
+    min: 10
+    max: 10
   resources:
     limits:
       memory: 640Mi
