@@ -25,7 +25,6 @@ class KafkaConsumer(
             try {
                 consumer.poll(running::get) { records ->
                     records.forEach { record ->
-                        logger.info("Consuming message ${record.key()} - ${record.value()}")
                         val jsonNode = jacksonObjectMapper().readTree(record.value())
                         val fødselsnummer = jsonNode["fodselsnummer"]?.asText() ?: return@forEach
                         meldingRepository.lagreMelding(fødselsnummer, record.value())

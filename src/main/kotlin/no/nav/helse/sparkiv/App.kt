@@ -36,7 +36,6 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
         applicationModule = {
             monitor.subscribe(ServerReady) {
                 dataSourceBuilder.migrate()
-                logger.info("Migration done")
                 consumer.consume(MeldingDao(dataSourceBuilder.getDataSource()))
             }
         },
