@@ -23,7 +23,7 @@ spec:
     enabled: true
     path: /metrics
   replicas:
-    min: 10
+    min: 1
     max: 10
   resources:
     limits:
@@ -39,7 +39,7 @@ spec:
     sqlInstances:
       - type: POSTGRES_17
         diskAutoresize: true
-        tier: db-custom-10-20480
+        tier: db-custom-1-3840
         databases:
           - name: sparkiv-subsumsjon
             envVarPrefix: DATABASE
