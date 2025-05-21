@@ -48,3 +48,7 @@ spec:
       value: flex.omrade-helse-etterlevelse
     - name: CONSUMER_GROUP_ID
       value: sparkiv-subsumsjon-v1
+  observability:
+    logging:
+      destinations:
+        - id: elastic
