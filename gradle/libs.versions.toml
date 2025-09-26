@@ -1,0 +1,37 @@
+[versions]
+tbd-libs = "2025.09.19-15.24-1a9c113f"
+flyway = "11.13.1"
+postgres = "42.7.8"
+kotliquery = "1.9.0"
+hikaricp = "7.0.2"
+testcontainers = "1.21.3"
+logback = "1.5.18"
+logstash = "8.1"
+
+[libraries]
+kafka = { module = "com.github.navikt.tbd-libs:kafka", version.ref = "tbd-libs" }
+naisful-app = { module = "com.github.navikt.tbd-libs:naisful-app", version.ref = "tbd-libs" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-pg = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+kotliquery = { module = "com.github.seratch:kotliquery", version.ref = "kotliquery" }
+postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
+tc-pg = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+tc-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
+
+[bundles]
+db = [
+    "flyway-core",
+    "flyway-pg",
+    "kotliquery",
+    "postgres",
+    "hikaricp"
+]
+logging = [
+    "logback",
+    "logstash"
+]
+
+
