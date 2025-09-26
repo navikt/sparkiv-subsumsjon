@@ -6,14 +6,14 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("tbd-libs", "2024.11.29-15.07-105481e3")
-            version("flyway", "11.1.0")
-            version("postgres", "42.7.3")
+            version("tbd-libs", "2025.09.19-15.24-1a9c113f")
+            version("flyway", "11.13.1")
+            version("postgres", "42.7.8")
             version("kotliquery", "1.9.0")
-            version("hikaricp", "5.1.0")
-            version("testcontainers", "1.20.4")
-            version("logback", "1.5.12")
-            version("logstash", "8.0")
+            version("hikaricp", "7.0.2")
+            version("testcontainers", "1.21.3")
+            version("logback", "1.5.18")
+            version("logstash", "8.1")
 
             library("kafka", "com.github.navikt.tbd-libs", "kafka").versionRef("tbd-libs")
             library("naisful-app", "com.github.navikt.tbd-libs", "naisful-app").versionRef("tbd-libs")
