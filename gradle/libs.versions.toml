@@ -5,7 +5,7 @@ postgres = "42.7.8"
 kotliquery = "1.9.0"
 hikaricp = "7.0.2"
 testcontainers = "1.21.3"
-logback = "1.5.18"
+logback = "1.5.19"
 logstash = "8.1"
 
 [libraries]
