@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
 import java.time.ZonedDateTime
@@ -40,7 +40,7 @@ fun main() {
 private val database =
     object {
         private val postgres =
-            PostgreSQLContainer<Nothing>("postgres:17").apply {
+            PostgreSQLContainer("postgres:17").apply {
                 withReuse(true)
                 start()
 

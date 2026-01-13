@@ -8,7 +8,7 @@ import org.flywaydb.core.Flyway
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.ZonedDateTime
 import java.util.*
 import kotlin.random.Random
@@ -118,7 +118,7 @@ class MeldingDaoTest {
     private val database =
         object {
             private val postgres =
-                PostgreSQLContainer<Nothing>("postgres:17").apply {
+                PostgreSQLContainer("postgres:17").apply {
                     withReuse(true)
                     withLabel("app-navn", "sparkiv-subsumsjon")
                     start()

@@ -16,8 +16,8 @@ import org.flywaydb.core.Flyway
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 import java.net.URI
 import java.net.http.HttpClient
@@ -72,7 +72,7 @@ open class IntegrationTest {
     private val database =
         object {
             private val postgres =
-                PostgreSQLContainer<Nothing>("postgres:14").apply {
+                PostgreSQLContainer("postgres:14").apply {
                     withReuse(true)
                     start()
 
