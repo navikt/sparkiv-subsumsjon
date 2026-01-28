@@ -30,8 +30,6 @@ spec:
       memory: 512Mi
   kafka:
     pool: nav-dev
-  secureLogs:
-    enabled: true
   gcp:
     sqlInstances:
       - type: POSTGRES_17
