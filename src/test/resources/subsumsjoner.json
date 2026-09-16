@@ -1,0 +1,589 @@
+[
+  {
+    "id": "a203b004-9b8d-465a-bcb9-f0ec6f2c00d8",
+    "ledd": 2,
+    "input": {
+      "skjæringstidspunkt": "2024-04-01",
+      "maksimaltSykepengegrunnlag": 711720.0,
+      "grunnlagForSykepengegrunnlag": 540000.0
+    },
+    "kilde": "spleis",
+    "output": {
+      "erBegrenset": false
+    },
+    "utfall": "VILKAR_BEREGNET",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": 1,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-10",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:38.516024347+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2020-01-01",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "7e615b54-8b30-4f2e-b3e2-c48a00f8374b",
+    "ledd": 1,
+    "input": {
+      "arbeidsforhold": [
+        {
+          "fom": "2023-10-02",
+          "tom": null,
+          "orgnummer": "947064649"
+        }
+      ],
+      "skjæringstidspunkt": "2024-04-01",
+      "tilstrekkeligAntallOpptjeningsdager": 28
+    },
+    "kilde": "spleis",
+    "output": {
+      "antallOpptjeningsdager": 182
+    },
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-2",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:38.516543847+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2020-06-12",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "bde1e439-9863-404a-9eb1-31ffd3f85bb6",
+    "ledd": 1,
+    "input": {
+      "sykdomstidslinje": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21",
+          "grad": 100,
+          "dagtype": "SYKEDAG"
+        }
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-16"
+        }
+      ]
+    },
+    "utfall": "VILKAR_IKKE_OPPFYLT",
+    "bokstav": "a",
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-17",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.523605775+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2018-01-01",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "9d343001-f0b8-450b-940e-f483a867c9bf",
+    "ledd": 1,
+    "input": {
+      "sykdomstidslinje": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21",
+          "grad": 100,
+          "dagtype": "SYKEDAG"
+        }
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-17",
+          "tom": "2024-04-17"
+        }
+      ]
+    },
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": "a",
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-17",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.525675655+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2018-01-01",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "e846c2e6-7ce2-4292-b413-dc160deb7599",
+    "ledd": 2,
+    "input": {
+      "beregnetTidslinje": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21",
+          "grad": 100,
+          "dagtype": "SYKEDAG"
+        }
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-16"
+        }
+      ]
+    },
+    "utfall": "VILKAR_BEREGNET",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-19",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.525974895+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2001-01-01",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "aeeffa63-277d-4528-8bb6-239f179caba8",
+    "ledd": null,
+    "input": {
+      "periode": {
+        "fom": "2024-04-01",
+        "tom": "2024-04-21"
+      }
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-20",
+          "tom": "2024-04-21"
+        }
+      ]
+    },
+    "utfall": "VILKAR_IKKE_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-11",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526087685+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "1997-02-28",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "a7d33b02-e6a2-4421-8c5c-bd3d42d52947",
+    "ledd": 1,
+    "input": {
+      "inntekt": 540000.0,
+      "dekningsgrad": 1.0
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21"
+        }
+      ],
+      "dekningsgrunnlag": 540000.0
+    },
+    "utfall": "VILKAR_BEREGNET",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-16",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526205825+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "1997-02-28",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "791ad961-9ae4-4eef-8047-758335755605",
+    "ledd": 2,
+    "input": {
+      "grense": 20.0,
+      "tidslinjegrunnlag": [
+        [
+          {
+            "fom": "2024-04-01",
+            "tom": "2024-04-16",
+            "grad": 100,
+            "dagtype": "AGPDAG"
+          },
+          {
+            "fom": "2024-04-17",
+            "tom": "2024-04-21",
+            "grad": 100,
+            "dagtype": "NAVDAG"
+          }
+        ]
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21"
+        }
+      ],
+      "dagerUnderGrensen": []
+    },
+    "utfall": "VILKAR_BEREGNET",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-13",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526342095+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "1997-02-28",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "d28cc962-b2da-462f-821f-cbde3aa55894",
+    "ledd": 1,
+    "input": {
+      "tidslinjegrunnlag": [
+        [
+          {
+            "fom": "2024-04-01",
+            "tom": "2024-04-16",
+            "grad": 100,
+            "dagtype": "AGPDAG"
+          },
+          {
+            "fom": "2024-04-17",
+            "tom": "2024-04-21",
+            "grad": 100,
+            "dagtype": "NAVDAG"
+          }
+        ]
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "perioder": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-21"
+        }
+      ]
+    },
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-13",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526464465+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "1997-02-28",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "5cf5b46c-1468-4666-a2e8-8643afced18e",
+    "ledd": 2,
+    "input": {
+      "minimumInntekt": 59310.0,
+      "skjæringstidspunkt": "2024-04-01",
+      "grunnlagForSykepengegrunnlag": 540000.0
+    },
+    "kilde": "spleis",
+    "output": {},
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": 1,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-3",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526550955+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2011-12-16",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "cc24cfad-23b1-43f2-9426-f0e535fbf12c",
+    "ledd": 2,
+    "input": {
+      "dato": "2024-04-21",
+      "beregnetTidslinje": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-16",
+          "grad": 100,
+          "dagtype": "AGPDAG"
+        },
+        {
+          "fom": "2024-04-17",
+          "tom": "2024-04-21",
+          "grad": 100,
+          "dagtype": "NAVDAG"
+        }
+      ],
+      "tidslinjegrunnlag": [
+        [
+          {
+            "fom": "2024-04-01",
+            "tom": "2024-04-16",
+            "grad": 100,
+            "dagtype": "AGPDAG"
+          },
+          {
+            "fom": "2024-04-17",
+            "tom": "2024-04-21",
+            "grad": 100,
+            "dagtype": "NAVDAG"
+          }
+        ]
+      ],
+      "tilstrekkeligOppholdISykedager": 182
+    },
+    "kilde": "spleis",
+    "output": {},
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": null,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-12",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526637355+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2021-05-21",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "62744310-bf5e-497e-b514-fbf7461e293a",
+    "ledd": 1,
+    "input": {
+      "fom": "2024-04-01",
+      "tom": "2024-04-21",
+      "utfallFom": "2024-04-17",
+      "utfallTom": "2024-04-21",
+      "beregnetTidslinje": [
+        {
+          "fom": "2024-04-01",
+          "tom": "2024-04-16",
+          "grad": 100,
+          "dagtype": "AGPDAG"
+        },
+        {
+          "fom": "2024-04-17",
+          "tom": "2024-04-21",
+          "grad": 100,
+          "dagtype": "NAVDAG"
+        }
+      ],
+      "tidslinjegrunnlag": [
+        [
+          {
+            "fom": "2024-04-01",
+            "tom": "2024-04-16",
+            "grad": 100,
+            "dagtype": "AGPDAG"
+          },
+          {
+            "fom": "2024-04-17",
+            "tom": "2024-04-21",
+            "grad": 100,
+            "dagtype": "NAVDAG"
+          }
+        ]
+      ]
+    },
+    "kilde": "spleis",
+    "output": {
+      "maksdato": "2025-03-28",
+      "forbrukteSykedager": 3,
+      "gjenståendeSykedager": 245
+    },
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": 1,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-12",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526728235+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2021-05-21",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  },
+  {
+    "id": "17273879-951f-4ce1-a01f-3d4eb53aa12b",
+    "ledd": 1,
+    "input": {
+      "utfallFom": "2024-04-01",
+      "utfallTom": "2024-04-21",
+      "tidslinjeFom": "2024-04-01",
+      "tidslinjeTom": "2024-04-21",
+      "syttiårsdagen": "2048-10-17"
+    },
+    "kilde": "spleis",
+    "output": {
+      "avvisteDager": []
+    },
+    "utfall": "VILKAR_OPPFYLT",
+    "bokstav": null,
+    "lovverk": "folketrygdloven",
+    "punktum": 2,
+    "sporing": {
+      "vedtaksperiode": [
+        "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+      ],
+      "organisasjonsnummer": [
+        "947064649"
+      ]
+    },
+    "versjon": "1.1.0",
+    "paragraf": "8-3",
+    "eventName": "subsumsjon",
+    "tidsstempel": "2026-01-06T13:43:39.526827745+01:00",
+    "behandlingId": "2f07f9ff-cb8a-4d2b-a0de-2adeee2aa522",
+    "fodselsnummer": "57907801103",
+    "versjonAvKode": "europe-north1-docker.pkg.dev/nais-management-233d/tbd/helse-spleis-spleis:2026.01.05-15.08-a76de02",
+    "lovverksversjon": "2011-12-16",
+    "vedtaksperiodeId": "c2485116-ca36-4aa0-b9b1-b9b50420d1a0"
+  }
+]

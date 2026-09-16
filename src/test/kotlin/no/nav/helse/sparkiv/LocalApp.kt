@@ -1,5 +1,6 @@
 package no.nav.helse.sparkiv
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,6 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
-import java.time.ZonedDateTime
 import java.util.*
 
 private val kafka = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
@@ -25,15 +25,35 @@ private val factory = ConsumerProducerFactory(kafkaConfig)
 fun main() {
     val topic = "topic.v1"
     val scope = CoroutineScope(Dispatchers.Default)
-    val message = """{ "id": "${UUID.randomUUID()}", "fodselsnummer": "foobar", "tidsstempel": "${ZonedDateTime.now()}", "eventName": "subsumsjon" }"""
     runBlocking(scope.coroutineContext) {
         logger.info("Starting local app")
         launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic, "CONSUMER_GROUP_ID" to "local-consumer"), kafkaConfig = kafkaConfig) }
-        factory.createProducer().use {
-            val randomUUID = UUID.randomUUID()
-            logger.info("Producing message with id=${randomUUID}")
-            it.send(ProducerRecord(topic, message))
+        val meldinger = dummyMeldinger()
+        factory.createProducer().use { producer ->
+            meldinger.forEach { melding ->
+                logger.info("Produserer dummy-melding for vedtaksperiodeId=${melding.vedtaksperiodeId} eventName=${melding.eventName}")
+                producer.send(ProducerRecord(topic, melding.json))
+            }
         }
+        logger.info("Ferdig med å produsere dummy-meldinger. Åpne http://localhost:8080 for å søke opp meldinger.")
+        logger.info("Eksempel-vedtaksperiodeId-er: ${meldinger.map { it.vedtaksperiodeId }.distinct().joinToString()}")
+        logger.info("Eksempel-fødselsnummer: ${meldinger.map { it.fødselsnummer }.distinct().joinToString()}")
+    }
+}
+
+private data class DummyMelding(val vedtaksperiodeId: String, val fødselsnummer: String, val eventName: String, val json: String)
+
+private fun dummyMeldinger(): List<DummyMelding> {
+    val mapper = jacksonObjectMapper()
+    val resource = requireNotNull(object {}.javaClass.getResourceAsStream("/personSubsumsjon.json")) {
+        "Fant ikke personSubsumsjon.json på classpath (forventet i src/test/resources)"
+    }
+    val meldinger = resource.use { mapper.readTree(it) }
+    return meldinger.map { melding ->
+        val vedtaksperiodeId = melding["vedtaksperiodeId"]?.asText() ?: "(ingen vedtaksperiodeId)"
+        val fødselsnummer = melding["fodselsnummer"].asText()
+        val eventName = melding["eventName"].asText()
+        DummyMelding(vedtaksperiodeId, fødselsnummer, eventName, mapper.writeValueAsString(melding))
     }
 }
 
