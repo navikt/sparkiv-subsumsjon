@@ -58,6 +58,8 @@ spec:
       value: flex.omrade-helse-etterlevelse
     - name: CONSUMER_GROUP_ID
       value: sparkiv-subsumsjon-v1
+    - name: KAN_SE_SUBSUMSJONER
+      value: "false"
   observability:
     logging:
       destinations:

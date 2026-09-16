@@ -8,6 +8,8 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  ingresses:
+    - https://sparkiv-subsumsjon.intern.dev.nav.no
   strategy:
     type: Recreate
   liveness:
@@ -43,6 +45,10 @@ spec:
       value: flex.omrade-helse-etterlevelse
     - name: CONSUMER_GROUP_ID
       value: sparkiv-subsumsjon-v1
+    - name: KAN_SE_SUBSUMSJONER
+      value: "true"
+    - name: FRONTEND_ORIGINS
+      value: "https://sparkiv-subsumsjon-frontend.intern.dev.nav.no"
   observability:
     logging:
       destinations:
