@@ -27,7 +27,16 @@ fun main() {
     val scope = CoroutineScope(Dispatchers.Default)
     runBlocking(scope.coroutineContext) {
         logger.info("Starting local app")
-        launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic, "CONSUMER_GROUP_ID" to "local-consumer"), kafkaConfig = kafkaConfig) }
+        launch {
+            app(
+                env = database.envvars + mapOf(
+                    "KAFKA_TOPIC" to topic,
+                    "CONSUMER_GROUP_ID" to "local-consumer",
+                    "KAN_SE_SUBSUMSJONER" to "true"
+                ),
+                kafkaConfig = kafkaConfig
+            )
+        }
         val meldinger = dummyMeldinger()
         factory.createProducer().use { producer ->
             meldinger.forEach { melding ->
