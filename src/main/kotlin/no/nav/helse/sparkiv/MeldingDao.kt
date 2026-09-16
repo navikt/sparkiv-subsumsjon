@@ -50,4 +50,28 @@ class MeldingDao(
             )
         }
     }
+
+    fun hentMeldinger(vedtaksperiodeId: UUID): List<String> {
+        @Language("PostgreSQL")
+        val query = "SELECT json FROM melding WHERE json ->> 'vedtaksperiodeId' = :vedtaksperiodeId ORDER BY tidsstempel"
+        return sessionOf(dataSource).use { session ->
+            session.run(
+                queryOf(query, mapOf("vedtaksperiodeId" to vedtaksperiodeId.toString()))
+                    .map { row -> row.string("json") }
+                    .asList
+            )
+        }
+    }
+
+    fun hentMeldinger(fødselsnummer: String): List<String> {
+        @Language("PostgreSQL")
+        val query = "SELECT json FROM melding WHERE fødselsnummer = :fodselsnummer ORDER BY tidsstempel"
+        return sessionOf(dataSource).use { session ->
+            session.run(
+                queryOf(query, mapOf("fodselsnummer" to fødselsnummer))
+                    .map { row -> row.string("json") }
+                    .asList
+            )
+        }
+    }
 }

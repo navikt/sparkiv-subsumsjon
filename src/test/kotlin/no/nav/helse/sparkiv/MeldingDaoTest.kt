@@ -38,6 +38,48 @@ class MeldingDaoTest {
     }
 
     @Test
+    fun `hent meldinger for vedtaksperiodeId`() {
+        val fødselsnummer = "12345678910"
+        val vedtaksperiodeId = UUID.randomUUID()
+        val behandlingId = UUID.randomUUID()
+        val eventName = "subsumsjon"
+        val dao = MeldingDao(database.dataSource)
+
+        val meldinger = listOf(
+            """{"vedtaksperiodeId": "$vedtaksperiodeId", "behandlingId": "$behandlingId", "paragraf": "8-2"}""",
+            """{"vedtaksperiodeId": "$vedtaksperiodeId", "behandlingId": "$behandlingId", "paragraf": "8-13"}"""
+        )
+        meldinger.forEach { melding ->
+            dao.lagreMelding(fødselsnummer, UUID.randomUUID(), ZonedDateTime.now(), eventName, melding)
+        }
+        // en melding for en annen vedtaksperiode skal ikke være med i resultatet
+        dao.lagreMelding(fødselsnummer, UUID.randomUUID(), ZonedDateTime.now(), eventName, """{"vedtaksperiodeId": "${UUID.randomUUID()}"}""")
+
+        val resultat = dao.hentMeldinger(vedtaksperiodeId)
+        assertEquals(meldinger.size, resultat.size)
+    }
+
+    @Test
+    fun `hent meldinger for fødselsnummer`() {
+        val fødselsnummer = "23456789101"
+        val eventName = "subsumsjon"
+        val dao = MeldingDao(database.dataSource)
+
+        val meldinger = listOf(
+            """{"vedtaksperiodeId": "${UUID.randomUUID()}", "paragraf": "8-2"}""",
+            """{"vedtaksperiodeId": "${UUID.randomUUID()}", "paragraf": "8-13"}"""
+        )
+        meldinger.forEach { melding ->
+            dao.lagreMelding(fødselsnummer, UUID.randomUUID(), ZonedDateTime.now(), eventName, melding)
+        }
+        // en melding for et annet fødselsnummer skal ikke være med i resultatet
+        dao.lagreMelding("34567891012", UUID.randomUUID(), ZonedDateTime.now(), eventName, """{"vedtaksperiodeId": "${UUID.randomUUID()}"}""")
+
+        val resultat = dao.hentMeldinger(fødselsnummer)
+        assertEquals(meldinger.size, resultat.size)
+    }
+
+    @Test
     fun `lagre mangelfull melding`() {
         @Language("JSON")
         val melding = """{"foo": "bar"}"""

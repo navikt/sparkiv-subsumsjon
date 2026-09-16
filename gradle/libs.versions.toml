@@ -7,6 +7,7 @@ hikaricp = "7.0.2"
 testcontainers = "2.0.3"
 logback = "1.5.18"
 logstash = "8.1"
+ktor = "3.2.3"
 
 [libraries]
 kafka = { module = "com.github.navikt.tbd-libs:kafka", version.ref = "tbd-libs" }
@@ -20,6 +21,7 @@ tc-pg = { module = "org.testcontainers:testcontainers-postgresql", version.ref =
 tc-kafka = { module = "org.testcontainers:testcontainers-kafka", version.ref = "testcontainers" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 
 [bundles]
 db = [
