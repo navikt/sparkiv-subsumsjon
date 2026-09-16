@@ -9,7 +9,6 @@ dependencies {
     implementation(libs.naisful.app)
     implementation(libs.bundles.db)
     implementation(libs.bundles.logging)
-    implementation(libs.ktor.server.cors)
     testImplementation(libs.tc.kafka)
     testImplementation(libs.tc.pg)
     testImplementation(kotlin("test"))
@@ -23,6 +22,14 @@ kotlin {
 }
 
 tasks {
+    processResources {
+        // Frontendens ferdigbygde statiske filer (frontend/dist, se README i frontend/) pakkes inn
+        // som statiske ressurser i jaren, og serveres av backend-appen (se App.kt).
+        from("${rootProject.projectDir}/frontend/dist") {
+            into("static")
+        }
+    }
+
     jar {
         archiveBaseName.set("app")
 

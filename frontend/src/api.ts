@@ -1,7 +1,5 @@
 import type { Melding } from './types'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
-
 export class ApiError extends Error {
     status: number
 
@@ -24,9 +22,9 @@ async function hent(url: string): Promise<Melding[]> {
 }
 
 export function hentMeldinger(vedtaksperiodeId: string): Promise<Melding[]> {
-    return hent(`${API_URL}/vedtaksperiode/${encodeURIComponent(vedtaksperiodeId)}`)
+    return hent(`/vedtaksperiode/${encodeURIComponent(vedtaksperiodeId)}`)
 }
 
 export function hentMeldingerForFodselsnummer(fodselsnummer: string): Promise<Melding[]> {
-    return hent(`${API_URL}/fodselsnummer/${encodeURIComponent(fodselsnummer)}`)
+    return hent(`/fodselsnummer/${encodeURIComponent(fodselsnummer)}`)
 }

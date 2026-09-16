@@ -7,21 +7,20 @@ for hver gruppe listes under hverandre som ekspanderbare rader.
 UI-komponenter er bygget med [Aksel](https://aksel.nav.no) (`@navikt/ds-react` / `@navikt/ds-css`),
 NAVs designsystem.
 
-Appen kjører helt uavhengig av backend-appen og snakker med den over HTTP (CORS).
+Appen bygges inn i backend-jaren og serveres av backend-appen på samme origin (se
+`processResources` i `build.gradle.kts` og `App.kt`), så det trengs ikke CORS eller noen egen
+frontend-driftssetting.
 
 ## Kjøre lokalt
 
 ```bash
-cp .env.example .env   # juster VITE_API_URL om backend kjører på en annen adresse/port
 npm install
 npm run dev
 ```
 
-Åpne deretter `http://localhost:5173`.
-
-Backend-appen må kjøre samtidig (se `LocalApp.kt` i hovedprosjektet for å starte en lokal backend
-med testcontainere og dummy-data), og må ha `http://localhost:5173` i sin `FRONTEND_ORIGINS`
-(dette er default når `FRONTEND_ORIGINS` ikke er satt).
+Åpne deretter `http://localhost:5173`. API-kall proxyes til `http://localhost:5173` → backend på
+`http://localhost:8080` (se `vite.config.ts`), så backend-appen må kjøre samtidig (se `LocalApp.kt`
+i hovedprosjektet for å starte en lokal backend med testcontainere og dummy-data).
 
 ## Bygge
 
@@ -29,5 +28,5 @@ med testcontainere og dummy-data), og må ha `http://localhost:5173` i sin `FRON
 npm run build
 ```
 
-Bygger en statisk `dist/`-mappe som kan hostes hvor som helst (f.eks. NAIS static hosting), så
-lenge `VITE_API_URL` peker til riktig backend-URL på build-tidspunktet.
+Bygger en statisk `dist/`-mappe som Gradle-bygget i hovedprosjektet kopierer inn som statiske
+ressurser i backend-jaren.

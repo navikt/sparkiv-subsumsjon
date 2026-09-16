@@ -6,11 +6,9 @@ import com.github.navikt.tbd_libs.kafka.Config
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import com.github.navikt.tbd_libs.naisful.naisApp
 import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ServerReady
-import io.ktor.server.application.install
-import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -23,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.slf4j.LoggerFactory
-import java.net.URI
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
@@ -46,13 +43,6 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
     val groupId = env.getValue("CONSUMER_GROUP_ID")
     val consumer = KafkaConsumer(groupId, kafkaTopic, defaultConsumerProperties, factory)
 
-    // Kommaseparert liste med origins for frontend-appen, f.eks. "https://sparkiv-subsumsjon-frontend.intern.nav.no"
-    val frontendOrigins = env["FRONTEND_ORIGINS"]
-        ?.split(",")
-        ?.map(String::trim)
-        ?.filter(String::isNotBlank)
-        ?: listOf("http://localhost:5173")
-
     // Toggle for å skru av/på søk på fødselsnummer. Skal kun være "true" i dev inntil løsningen
     // er sikret med autentisering (se KAN_SE_SUBSUMSJONER i deploy/dev.yml og deploy/prod.yml).
     val kanSeSubsumsjoner = env["KAN_SE_SUBSUMSJONER"] == "true"
@@ -63,14 +53,10 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
         applicationLogger = logger,
         callLogger = LoggerFactory.getLogger("no.nav.helse.sparkiv.calls"),
         applicationModule = {
-            install(CORS) {
-                allowMethod(HttpMethod.Get)
-                frontendOrigins.forEach { origin ->
-                    val uri = URI(origin)
-                    allowHost(if (uri.port != -1) "${uri.host}:${uri.port}" else uri.host, schemes = listOf(uri.scheme))
-                }
-            }
             routing {
+                // Frontendens statiske filer (bygget av frontend/, kopiert inn i static/ av
+                // build.gradle.kts sin processResources-task) serveres på samme origin som API-et.
+                staticResources("/", "static")
                 if (kanSeSubsumsjoner) {
                     get("/vedtaksperiode/{vedtaksperiodeId}") {
                         val vedtaksperiodeId = try {
