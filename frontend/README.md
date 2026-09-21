@@ -14,8 +14,8 @@ frontend-driftssetting.
 ## Kjøre lokalt
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Åpne deretter `http://localhost:5173`. API-kall proxyes til `http://localhost:5173` → backend på
@@ -25,7 +25,7 @@ i hovedprosjektet for å starte en lokal backend med testcontainere og dummy-dat
 ## Bygge
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Bygger en statisk `dist/`-mappe som Gradle-bygget i hovedprosjektet kopierer inn som statiske
