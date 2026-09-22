@@ -9,7 +9,7 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "pnpm dlx only-allow pnpm",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
