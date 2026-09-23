@@ -36,6 +36,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.3.0(@types/node@24.13.5))
+      only-allow:
+        specifier: 1.2.2
+        version: 1.2.2
       oxlint:
         specifier: ^1.81.0
         version: 1.83.0
@@ -445,6 +448,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  only-allow@1.2.2:
+    resolution: {integrity: sha512-uxyNYDsCh5YIJ780G7hC5OHjVUr9reHsbZNMM80L9tZlTpb3hUzb36KXgW4ZUGtJKQnGA3xegmWg1BxhWV0jJA==}
+    hasBin: true
+
   oxlint@1.83.0:
     resolution: {integrity: sha512-cyDzSzaw3uzP0TeCeq3lLRPPoaUxkbB4ZOXj+kn+5r+BX9V+4bNVGk9lxer+WrgcpebH4JxLlJ3KQjveVztOLQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -557,6 +564,10 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  which-pm-runs@1.1.0:
+    resolution: {integrity: sha512-n1brCuqClxfFfq/Rb0ICg9giSZqCS+pLtccdag6C2HyufBrh3fBOiy9nb6ggRMvWOVH5GrdJskj5iGTZNxd7SA==}
+    engines: {node: '>=4'}
 
 snapshots:
 
@@ -793,6 +804,10 @@ snapshots:
 
   nanoid@3.3.19: {}
 
+  only-allow@1.2.2:
+    dependencies:
+      which-pm-runs: 1.1.0
+
   oxlint@1.83.0:
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.83.0
@@ -886,3 +901,5 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.13.5
       fsevents: 2.3.3
+
+  which-pm-runs@1.1.0: {}
