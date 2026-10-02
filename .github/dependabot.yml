@@ -37,5 +37,3 @@ updates:
     registries: "*"
     cooldown:
       default-days: 7
-      exclude:
-        - "@navikt/*"
