@@ -1,10 +1,10 @@
 package no.nav.helse.sparkiv
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import com.github.navikt.tbd_libs.kafka.poll
 import org.apache.kafka.common.errors.WakeupException
+import tools.jackson.databind.JsonNode
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -31,9 +31,9 @@ class KafkaConsumer(
                 consumer.poll(running::get) { records ->
                     records.forEach { record ->
                         val jsonNode = jacksonObjectMapper().readTree(record.value())
-                        val fødselsnummer = jsonNode["fodselsnummer"]?.asText()
+                        val fødselsnummer = jsonNode["fodselsnummer"]?.asString()
                         val id = jsonNode["id"]?.asUuid()
-                        val eventName = jsonNode["eventName"]?.asText()
+                        val eventName = jsonNode["eventName"]?.asString()
                         val tidsstempel = jsonNode["tidsstempel"]?.asZonedDateTime()
                         if (fødselsnummer == null || id == null || eventName == null || tidsstempel == null) {
                             return@forEach meldingRepository.lagreMangelfullMelding(record.partition(), record.offset(), record.value())
