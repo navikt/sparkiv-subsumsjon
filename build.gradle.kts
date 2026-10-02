@@ -17,41 +17,10 @@ dependencies {
     testImplementation(libs.tc.pg)
 }
 
-val frontendDir = layout.projectDirectory.dir("frontend")
-
-// pnpm er ikke installert på GitHub-runnerne, så vi kjører versjonen fra packageManager i package.json via npx.
-val pnpm =
-    Regex(""""packageManager"\s*:\s*"(pnpm@[^"]+)"""")
-        .find(frontendDir.file("package.json").asFile.readText())
-        ?.groupValues
-        ?.get(1)
-        ?: error("Fant ikke packageManager i frontend/package.json")
-
-val installerFrontend =
-    tasks.register<Exec>("installerFrontend") {
-        workingDir = frontendDir.asFile
-        commandLine("npx", "--yes", pnpm, "install", "--frozen-lockfile")
-        inputs.files(frontendDir.file("package.json"), frontendDir.file("pnpm-lock.yaml"))
-        outputs.dir(frontendDir.dir("node_modules"))
-    }
-
-val byggFrontend =
-    tasks.register<Exec>("byggFrontend") {
-        dependsOn(installerFrontend)
-        workingDir = frontendDir.asFile
-        commandLine("npx", "--yes", pnpm, "run", "build")
-        inputs.files(
-            frontendDir.dir("src"),
-            frontendDir.dir("public"),
-            frontendDir.files("index.html", "package.json", "pnpm-lock.yaml", "vite.config.ts"),
-            frontendDir.asFileTree.matching { include("tsconfig*.json") },
-        )
-        outputs.dir(frontendDir.dir("dist"))
-    }
-
 tasks.processResources {
-    // Frontendens ferdigbygde statiske filer pakkes inn som statiske ressurser, og serveres av backend-appen (se App.kt).
-    from(byggFrontend) {
+    // Frontenden bygges med pnpm utenfor Gradle (se frontend/README.md og .github/actions/bygg-frontend).
+    // De ferdigbygde statiske filene pakkes inn som statiske ressurser, og serveres av backend-appen (se App.kt).
+    from(layout.projectDirectory.dir("frontend/dist")) {
         into("static")
     }
 }

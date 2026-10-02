@@ -59,7 +59,7 @@ fun app(
             callLogger = LoggerFactory.getLogger("no.nav.helse.sparkiv.calls"),
             applicationModule = {
                 routing {
-                    // Frontendens statiske filer (bygget av frontend/, kopiert inn i static/ av
+                    // Frontendens statiske filer (bygget med pnpm i frontend/, kopiert inn i static/ av
                     // build.gradle.kts sin processResources-task) serveres på samme origin som API-et.
                     staticResources("/", "static")
                     if (kanSeSubsumsjoner) {
