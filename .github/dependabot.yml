@@ -1,26 +1,39 @@
 version: 2
-updates:
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    commit-message:
-      prefix: "⬆️ "
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{ secrets.READER_TOKEN }}
+multi-ecosystem-groups:
+  avhengigheter:
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "⬆️ "
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    multi-ecosystem-group: "avhengigheter"
+    patterns: ["*"]
     cooldown:
       default-days: 7
       exclude:
         - "navikt/sykepenger-github-workflows*"
 
-  # Maintain dependencies for gradle
   - package-ecosystem: "gradle"
     directory: "/"
-    commit-message:
-      prefix: "⬆️ "
-    schedule:
-      interval: "daily"
+    multi-ecosystem-group: "avhengigheter"
+    patterns: ["*"]
     cooldown:
       default-days: 7
       exclude:
         - "no.nav.sykepenger.*"
         - "com.github.navikt.tbd-libs:*"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    multi-ecosystem-group: "avhengigheter"
+    patterns: ["*"]
+    registries: "*"
+    cooldown:
+      default-days: 7
