@@ -10,7 +10,9 @@ import org.flywaydb.core.Flyway
 import java.time.Duration
 import javax.sql.DataSource
 
-internal class DataSourceBuilder(env: Map<String, String>) {
+internal class DataSourceBuilder(
+    env: Map<String, String>,
+) {
     private val dbUrl = requireNotNull(env["DATABASE_JDBC_URL"]) { "JDBC url må være satt" }
 
     private val hikariConfig =
@@ -34,15 +36,14 @@ internal class DataSourceBuilder(env: Map<String, String>) {
         }
 
     private fun runMigration(dataSource: DataSource) =
-        Flyway.configure()
+        Flyway
+            .configure()
             .dataSource(dataSource)
             .lockRetryCount(-1)
             .load()
             .migrate()
 
-    internal fun getDataSource(): HikariDataSource {
-        return HikariDataSource(hikariConfig)
-    }
+    internal fun getDataSource(): HikariDataSource = HikariDataSource(hikariConfig)
 
     internal fun migrate() {
         HikariDataSource(hikariMigrationConfig).use { runMigration(it) }

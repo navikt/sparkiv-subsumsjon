@@ -8,18 +8,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.kafka.ConfluentKafkaContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 import java.util.*
 
-private val kafka = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
-    withReuse(true)
-    start()
-}
-private val kafkaConfig = LocalKafkaConfig(
-    mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties()
-)
+private val kafka =
+    ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
+        withReuse(true)
+        start()
+    }
+private val kafkaConfig =
+    LocalKafkaConfig(
+        mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties(),
+    )
 private val factory = ConsumerProducerFactory(kafkaConfig)
 
 fun main() {
@@ -29,12 +31,14 @@ fun main() {
         logger.info("Starting local app")
         launch {
             app(
-                env = database.envvars + mapOf(
-                    "KAFKA_TOPIC" to topic,
-                    "CONSUMER_GROUP_ID" to "local-consumer",
-                    "KAN_SE_SUBSUMSJONER" to "true"
-                ),
-                kafkaConfig = kafkaConfig
+                env =
+                    database.envvars +
+                        mapOf(
+                            "KAFKA_TOPIC" to topic,
+                            "CONSUMER_GROUP_ID" to "local-consumer",
+                            "KAN_SE_SUBSUMSJONER" to "true",
+                        ),
+                kafkaConfig = kafkaConfig,
             )
         }
         val meldinger = dummyMeldinger()
@@ -50,13 +54,19 @@ fun main() {
     }
 }
 
-private data class DummyMelding(val vedtaksperiodeId: String, val fødselsnummer: String, val eventName: String, val json: String)
+private data class DummyMelding(
+    val vedtaksperiodeId: String,
+    val fødselsnummer: String,
+    val eventName: String,
+    val json: String,
+)
 
 private fun dummyMeldinger(): List<DummyMelding> {
     val mapper = jacksonObjectMapper()
-    val resource = requireNotNull(object {}.javaClass.getResourceAsStream("/personSubsumsjon.json")) {
-        "Fant ikke personSubsumsjon.json på classpath (forventet i src/test/resources)"
-    }
+    val resource =
+        requireNotNull(object {}.javaClass.getResourceAsStream("/personSubsumsjon.json")) {
+            "Fant ikke personSubsumsjon.json på classpath (forventet i src/test/resources)"
+        }
     val meldinger = resource.use { mapper.readTree(it) }
     return meldinger.map { melding ->
         val vedtaksperiodeId = melding["vedtaksperiodeId"]?.asText() ?: "(ingen vedtaksperiodeId)"

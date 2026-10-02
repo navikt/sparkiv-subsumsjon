@@ -1,8 +1,12 @@
+group = "no.nav.helse"
+
 plugins {
-    kotlin("jvm") version "2.1.20"
+    alias(libs.plugins.sykepenger.deployable)
 }
 
-group = "no.nav.helse"
+sykepengerDeployable {
+    mainClass = "no.nav.helse.sparkiv.AppKt"
+}
 
 dependencies {
     implementation(libs.kafka)
@@ -11,41 +15,43 @@ dependencies {
     implementation(libs.bundles.logging)
     testImplementation(libs.tc.kafka)
     testImplementation(libs.tc.pg)
-    testImplementation(kotlin("test"))
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
-}
+val frontendDir = layout.projectDirectory.dir("frontend")
 
-tasks {
-    processResources {
-        // Frontendens ferdigbygde statiske filer (frontend/dist, se README i frontend/) pakkes inn
-        // som statiske ressurser i jaren, og serveres av backend-appen (se App.kt).
-        from("${rootProject.projectDir}/frontend/dist") {
-            into("static")
-        }
+// pnpm er ikke installert på GitHub-runnerne, så vi kjører versjonen fra packageManager i package.json via npx.
+val pnpm =
+    Regex(""""packageManager"\s*:\s*"(pnpm@[^"]+)"""")
+        .find(frontendDir.file("package.json").asFile.readText())
+        ?.groupValues
+        ?.get(1)
+        ?: error("Fant ikke packageManager i frontend/package.json")
+
+val installerFrontend =
+    tasks.register<Exec>("installerFrontend") {
+        workingDir = frontendDir.asFile
+        commandLine("npx", "--yes", pnpm, "install", "--frozen-lockfile")
+        inputs.files(frontendDir.file("package.json"), frontendDir.file("pnpm-lock.yaml"))
+        outputs.dir(frontendDir.dir("node_modules"))
     }
 
-    jar {
-        archiveBaseName.set("app")
+val byggFrontend =
+    tasks.register<Exec>("byggFrontend") {
+        dependsOn(installerFrontend)
+        workingDir = frontendDir.asFile
+        commandLine("npx", "--yes", pnpm, "run", "build")
+        inputs.files(
+            frontendDir.dir("src"),
+            frontendDir.dir("public"),
+            frontendDir.files("index.html", "package.json", "pnpm-lock.yaml", "vite.config.ts"),
+            frontendDir.asFileTree.matching { include("tsconfig*.json") },
+        )
+        outputs.dir(frontendDir.dir("dist"))
+    }
 
-        manifest {
-            attributes["Main-Class"] = "no.nav.helse.sparkiv.AppKt"
-            attributes["Class-Path"] =
-                configurations.runtimeClasspath.get().joinToString(separator = " ") {
-                    it.name
-                }
-        }
-
-        doLast {
-            configurations.runtimeClasspath.get().forEach {
-                val file = File("${layout.buildDirectory.get()}/libs/${it.name}")
-                if (!file.exists()) it.copyTo(file)
-            }
-        }
+tasks.processResources {
+    // Frontendens ferdigbygde statiske filer pakkes inn som statiske ressurser, og serveres av backend-appen (se App.kt).
+    from(byggFrontend) {
+        into("static")
     }
 }

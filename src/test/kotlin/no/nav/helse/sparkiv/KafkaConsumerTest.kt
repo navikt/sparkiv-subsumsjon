@@ -16,36 +16,50 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class KafkaConsumerTest {
-    private val kafka = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
-        withReuse(true)
-        start()
-    }
-    private val kafkaConfig = LocalKafkaConfig(
-        mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties()
-    )
+    private val kafka =
+        ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
+            withReuse(true)
+            start()
+        }
+    private val kafkaConfig =
+        LocalKafkaConfig(
+            mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties(),
+        )
     private val topic = "topic-1"
     private val factory = ConsumerProducerFactory(kafkaConfig)
 
     private val consumer = KafkaConsumer("some-id", topic, Properties(), factory)
 
-    private val repo = object : MeldingRepository {
-        val meldinger = mutableMapOf<String, String>()
-        val mangelfulleMeldinger = mutableListOf<String>()
-        override fun lagreMelding(fødselsnummer: String, id: UUID, tidsstempel: ZonedDateTime, eventName: String, json: String) {
-            meldinger[fødselsnummer] = json
-            consumer.stop()
-        }
+    private val repo =
+        object : MeldingRepository {
+            val meldinger = mutableMapOf<String, String>()
+            val mangelfulleMeldinger = mutableListOf<String>()
 
-        override fun lagreMangelfullMelding(partisjon: Int, offset: Long, json: String) {
-            mangelfulleMeldinger.add(json)
-            consumer.stop()
-        }
+            override fun lagreMelding(
+                fødselsnummer: String,
+                id: UUID,
+                tidsstempel: ZonedDateTime,
+                eventName: String,
+                json: String,
+            ) {
+                meldinger[fødselsnummer] = json
+                consumer.stop()
+            }
 
-        fun clear() {
-            meldinger.clear()
-            mangelfulleMeldinger.clear()
+            override fun lagreMangelfullMelding(
+                partisjon: Int,
+                offset: Long,
+                json: String,
+            ) {
+                mangelfulleMeldinger.add(json)
+                consumer.stop()
+            }
+
+            fun clear() {
+                meldinger.clear()
+                mangelfulleMeldinger.clear()
+            }
         }
-    }
 
     @BeforeEach
     fun beforeEach() {

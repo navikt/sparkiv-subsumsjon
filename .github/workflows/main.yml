@@ -1,95 +1,71 @@
-name: Bygg og deploy app
+name: main - Bygg, test og deploy
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      # Generelt oppsett - alt unntatt dokumentasjon / urelatert oppsett
+      - '**'
+      - '!**.md'
+      - '!CODEOWNERS'
+      - '!LICENSE'
+      - '!docs/**'
+      - '!.github/workflows/standard-dependabot-auto-merge.yml'
+      - '!.github/workflows/standard-dependency-submission.yml'
+      - '!.github/workflows/standard-pr.yml'
   schedule:
-    - cron: '0 3 * * 3'
+    - cron: '0 4 * * 3'
       timezone: 'Europe/Oslo'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
+  actions: read # for sarif
   contents: read
-  id-token: write
+  security-events: write # push sarif to github security
+  id-token: write # for nais login
 
 jobs:
-  build:
+  bygg-og-test:
+    name: Bygg og test
+    uses: navikt/sykepenger-github-workflows/.github/workflows/bygg-og-test-med-gradle.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    permissions:
+      contents: read
+
+  bygg-image:
     name: Bygg image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+    needs: bygg-og-test
+    uses: navikt/sykepenger-github-workflows/.github/workflows/bygg-image-med-jib.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    permissions:
+      actions: read # for sarif upload on private repos
+      contents: read
+      id-token: write # for nais login
+      security-events: write # push sarif to github security
 
-      - uses: pnpm/action-setup@v4
-        with:
-          package_json_file: frontend/package.json
+  deploy-dev:
+    name: Deploy til dev
+    needs: bygg-image
+    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    with:
+      manifest: .nais/sparkiv-subsumsjon.yaml
+      environment: dev-gcp
+      image: ${{ needs.bygg-image.outputs.image_ref }}
+    permissions:
+      contents: read
+      id-token: write # for nais login
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: frontend/package.json
-          cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
-
-      - name: Installer og bygg frontend
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm run build
-        working-directory: frontend
-
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      # Gradle sin processResources-task kopierer frontend/dist inn i jaren som statiske
-      # ressurser (se build.gradle.kts), så frontenden må være bygget før dette steget.
-      - name: Test and build
-        run: ./gradlew build
-        env:
-          ORG_GRADLE_PROJECT_githubUser: x-access-token
-          ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build container image
-        if: ${{ github.ref_name == 'main' }}
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        env:
-          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
-        with:
-          team: tbd
-          cache_from: type=gha
-          cache_to: type=gha,mode=max
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-
-  deployDev:
-    name: Deploy to dev
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'main' }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: nais/deploy/actions/deploy@v2
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: deploy/dev.yml
-          IMAGE: ${{ needs.build.outputs.image }}
-
-  deployProd:
-    name: Deploy to prod
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'main' }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: nais/deploy/actions/deploy@v2
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: deploy/prod.yml
-          IMAGE: ${{ needs.build.outputs.image }}
+  deploy-prod:
+    name: Deploy til prod
+    needs: bygg-image
+    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    with:
+      manifest: .nais/sparkiv-subsumsjon.yaml
+      environment: prod-gcp
+      image: ${{ needs.bygg-image.outputs.image_ref }}
+    permissions:
+      contents: read
+      id-token: write # for nais login

@@ -27,13 +27,15 @@ import java.util.*
 import kotlin.test.assertEquals
 
 open class IntegrationTest {
-    private val kafka = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
-        withReuse(true)
-        start()
-    }
-    private val kafkaConfig = LocalKafkaConfig(
-        mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties()
-    )
+    private val kafka =
+        ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
+            withReuse(true)
+            start()
+        }
+    private val kafkaConfig =
+        LocalKafkaConfig(
+            mapOf(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers).toProperties(),
+        )
     private val factory = ConsumerProducerFactory(kafkaConfig)
 
     @Disabled
@@ -44,8 +46,8 @@ open class IntegrationTest {
             launch { app(env = database.envvars + mapOf("KAFKA_TOPIC" to topic, "CONSUMER_GROUP_ID" to "local-consumer"), kafkaConfig = kafkaConfig) }
             factory.createProducer().use {
                 val randomUUID = UUID.randomUUID()
-                logger.info("Producing message with id=${randomUUID}")
-                it.send(ProducerRecord(topic,"""{"fodselsnummer": "$randomUUID"}"""))
+                logger.info("Producing message with id=$randomUUID")
+                it.send(ProducerRecord(topic, """{"fodselsnummer": "$randomUUID"}"""))
             }
             assertInnholdIDb()
             val client = HttpClient.newHttpClient()
@@ -55,7 +57,7 @@ open class IntegrationTest {
                     .uri(URI.create("http://localhost:8080/stop"))
                     .GET()
                     .build(),
-                HttpResponse.BodyHandlers.ofString()
+                HttpResponse.BodyHandlers.ofString(),
             )
         }
     }
@@ -63,9 +65,10 @@ open class IntegrationTest {
     private fun assertInnholdIDb() {
         @Language("PostgreSQL")
         val query = "SELECT true FROM melding WHERE fødselsnummer = :fodselsnummer"
-        val exists = sessionOf(database.dataSource).use { session ->
-            session.run(queryOf(query, mapOf("fodselsnummer" to "")).map { row -> row.boolean(1) }.asSingle)
-        }
+        val exists =
+            sessionOf(database.dataSource).use { session ->
+                session.run(queryOf(query, mapOf("fodselsnummer" to "")).map { row -> row.boolean(1) }.asSingle)
+            }
         assertEquals(true, exists)
     }
 
@@ -89,40 +92,50 @@ open class IntegrationTest {
                 )
 
             val dataSource =
-                HikariDataSource(HikariConfig().apply {
-                    jdbcUrl = postgres.jdbcUrl
-                    username = postgres.username
-                    password = postgres.password
-                    maximumPoolSize = 5
-                    connectionTimeout = 500
-                    initializationFailTimeout = 5000
-                })
+                HikariDataSource(
+                    HikariConfig().apply {
+                        jdbcUrl = postgres.jdbcUrl
+                        username = postgres.username
+                        password = postgres.password
+                        maximumPoolSize = 5
+                        connectionTimeout = 500
+                        initializationFailTimeout = 5000
+                    },
+                )
 
             init {
-                Flyway.configure()
+                Flyway
+                    .configure()
                     .dataSource(dataSource)
                     .load()
                     .migrate()
             }
         }
 
-    private class LocalKafkaConfig(private val connectionProperties: Properties) : Config {
-        override fun producerConfig(properties: Properties) = properties.apply {
-            putAll(connectionProperties)
-            put(ProducerConfig.ACKS_CONFIG, "all")
-            put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
-            put(ProducerConfig.LINGER_MS_CONFIG, "0")
-            put(ProducerConfig.RETRIES_CONFIG, "0")
-        }
+    private class LocalKafkaConfig(
+        private val connectionProperties: Properties,
+    ) : Config {
+        override fun producerConfig(properties: Properties) =
+            properties.apply {
+                putAll(connectionProperties)
+                put(ProducerConfig.ACKS_CONFIG, "all")
+                put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
+                put(ProducerConfig.LINGER_MS_CONFIG, "0")
+                put(ProducerConfig.RETRIES_CONFIG, "0")
+            }
 
-        override fun consumerConfig(groupId: String, properties: Properties) = properties.apply {
+        override fun consumerConfig(
+            groupId: String,
+            properties: Properties,
+        ) = properties.apply {
             putAll(connectionProperties)
             put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
             put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
         }
 
-        override fun adminConfig(properties: Properties) = properties.apply {
-            putAll(connectionProperties)
-        }
+        override fun adminConfig(properties: Properties) =
+            properties.apply {
+                putAll(connectionProperties)
+            }
     }
 }

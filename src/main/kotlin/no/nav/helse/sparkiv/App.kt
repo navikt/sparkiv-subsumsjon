@@ -24,10 +24,11 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
-private val defaultConsumerProperties = Properties().apply {
-    this[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
-    this[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
-}
+private val defaultConsumerProperties =
+    Properties().apply {
+        this[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+        this[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
+    }
 
 internal val logger = LoggerFactory.getLogger("no.nav.helse.sparkiv")
 
@@ -35,7 +36,10 @@ fun main() {
     app(System.getenv(), AivenConfig.default)
 }
 
-fun app(env: Map<String, String>, kafkaConfig: Config) {
+fun app(
+    env: Map<String, String>,
+    kafkaConfig: Config,
+) {
     val factory = ConsumerProducerFactory(kafkaConfig)
     val dataSourceBuilder = DataSourceBuilder(env)
     val meldingDao = MeldingDao(dataSourceBuilder.getDataSource())
@@ -44,60 +48,63 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
     val consumer = KafkaConsumer(groupId, kafkaTopic, defaultConsumerProperties, factory)
 
     // Toggle for å skru av/på søk på fødselsnummer. Skal kun være "true" i dev inntil løsningen
-    // er sikret med autentisering (se KAN_SE_SUBSUMSJONER i deploy/dev.yml og deploy/prod.yml).
+    // er sikret med autentisering (se KAN_SE_SUBSUMSJONER i .nais/sparkiv-subsumsjon.*-gcp.yaml).
     val kanSeSubsumsjoner = env["KAN_SE_SUBSUMSJONER"] == "true"
 
-    val app = naisApp(
-        meterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT),
-        objectMapper = jacksonObjectMapper(),
-        applicationLogger = logger,
-        callLogger = LoggerFactory.getLogger("no.nav.helse.sparkiv.calls"),
-        applicationModule = {
-            routing {
-                // Frontendens statiske filer (bygget av frontend/, kopiert inn i static/ av
-                // build.gradle.kts sin processResources-task) serveres på samme origin som API-et.
-                staticResources("/", "static")
-                if (kanSeSubsumsjoner) {
-                    get("/vedtaksperiode/{vedtaksperiodeId}") {
-                        val vedtaksperiodeId = try {
-                            UUID.fromString(call.parameters["vedtaksperiodeId"])
-                        } catch (err: IllegalArgumentException) {
-                            return@get call.respond(HttpStatusCode.BadRequest, "Ugyldig vedtaksperiodeId")
+    val app =
+        naisApp(
+            meterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT),
+            objectMapper = jacksonObjectMapper(),
+            applicationLogger = logger,
+            callLogger = LoggerFactory.getLogger("no.nav.helse.sparkiv.calls"),
+            applicationModule = {
+                routing {
+                    // Frontendens statiske filer (bygget av frontend/, kopiert inn i static/ av
+                    // build.gradle.kts sin processResources-task) serveres på samme origin som API-et.
+                    staticResources("/", "static")
+                    if (kanSeSubsumsjoner) {
+                        get("/vedtaksperiode/{vedtaksperiodeId}") {
+                            val vedtaksperiodeId =
+                                try {
+                                    UUID.fromString(call.parameters["vedtaksperiodeId"])
+                                } catch (err: IllegalArgumentException) {
+                                    return@get call.respond(HttpStatusCode.BadRequest, "Ugyldig vedtaksperiodeId")
+                                }
+                            val meldinger = meldingDao.hentMeldinger(vedtaksperiodeId)
+                            if (meldinger.isEmpty()) return@get call.respond(HttpStatusCode.NotFound)
+                            call.respondText(
+                                meldinger.joinToString(prefix = "[", postfix = "]", separator = ","),
+                                ContentType.Application.Json,
+                            )
                         }
-                        val meldinger = meldingDao.hentMeldinger(vedtaksperiodeId)
-                        if (meldinger.isEmpty()) return@get call.respond(HttpStatusCode.NotFound)
-                        call.respondText(
-                            meldinger.joinToString(prefix = "[", postfix = "]", separator = ","),
-                            ContentType.Application.Json
-                        )
+                    }
+                    if (kanSeSubsumsjoner) {
+                        get("/fodselsnummer/{fodselsnummer}") {
+                            val fødselsnummer = call.parameters["fodselsnummer"]
+                            if (fødselsnummer == null || !fødselsnummer.matches(Regex("\\d{11}"))) {
+                                return@get call.respond(HttpStatusCode.BadRequest, "Ugyldig fødselsnummer")
+                            }
+                            val meldinger = meldingDao.hentMeldinger(fødselsnummer)
+                            if (meldinger.isEmpty()) return@get call.respond(HttpStatusCode.NotFound)
+                            call.respondText(
+                                meldinger.joinToString(prefix = "[", postfix = "]", separator = ","),
+                                ContentType.Application.Json,
+                            )
+                        }
                     }
                 }
-                if (kanSeSubsumsjoner) {
-                    get("/fodselsnummer/{fodselsnummer}") {
-                        val fødselsnummer = call.parameters["fodselsnummer"]
-                        if (fødselsnummer == null || !fødselsnummer.matches(Regex("\\d{11}"))) {
-                            return@get call.respond(HttpStatusCode.BadRequest, "Ugyldig fødselsnummer")
-                        }
-                        val meldinger = meldingDao.hentMeldinger(fødselsnummer)
-                        if (meldinger.isEmpty()) return@get call.respond(HttpStatusCode.NotFound)
-                        call.respondText(
-                            meldinger.joinToString(prefix = "[", postfix = "]", separator = ","),
-                            ContentType.Application.Json
-                        )
-                    }
-                }
-            }
-        },
-        gracefulShutdownDelay = 10.seconds,
-        statusPagesConfig = {},
-        preStopHook = consumer::stop,
-    )
+            },
+            gracefulShutdownDelay = 10.seconds,
+            statusPagesConfig = {},
+            preStopHook = consumer::stop,
+        )
 
     app.monitor.subscribe(ServerReady) {
-        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            logger.error("Exception caught", throwable)
-            app.stop()
-        }
+        val exceptionHandler =
+            CoroutineExceptionHandler { _, throwable ->
+                logger.error("Exception caught", throwable)
+                app.stop()
+            }
         dataSourceBuilder.migrate()
         val scope = CoroutineScope(Dispatchers.Default + exceptionHandler)
         scope.launch {
@@ -107,4 +114,3 @@ fun app(env: Map<String, String>, kafkaConfig: Config) {
 
     app.start(wait = true)
 }
-

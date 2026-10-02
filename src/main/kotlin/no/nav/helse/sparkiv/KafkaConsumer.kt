@@ -53,10 +53,12 @@ class KafkaConsumer(
         consumer.wakeup()
     }
 
-    private fun JsonNode.asZonedDateTime() = try {
-        ZonedDateTime.parse(asText())
-    } catch (err: DateTimeParseException) {
-        LocalDateTime.parse(asText()).atZone(ZoneId.systemDefault())
-    }
+    private fun JsonNode.asZonedDateTime() =
+        try {
+            ZonedDateTime.parse(asText())
+        } catch (err: DateTimeParseException) {
+            LocalDateTime.parse(asText()).atZone(ZoneId.systemDefault())
+        }
+
     private fun JsonNode.asUuid() = UUID.fromString(asText())
 }

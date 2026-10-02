@@ -7,6 +7,7 @@ hikaricp = "7.0.2"
 testcontainers = "2.0.3"
 logback = "1.5.18"
 logstash = "8.1"
+sykepengerGradlePlugins = "20261001.1830"
 
 [libraries]
 kafka = { module = "com.github.navikt.tbd-libs:kafka", version.ref = "tbd-libs" }
@@ -34,4 +35,5 @@ logging = [
     "logstash"
 ]
 
-
+[plugins]
+sykepenger-deployable = { id = "no.nav.sykepenger.deployable", version.ref = "sykepengerGradlePlugins" }

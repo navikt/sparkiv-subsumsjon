@@ -29,4 +29,6 @@ pnpm run build
 ```
 
 Bygger en statisk `dist/`-mappe som Gradle-bygget i hovedprosjektet kopierer inn som statiske
-ressurser i backend-jaren.
+ressurser i backend-jaren. Gradle-bygget kjører selv `pnpm install` og `pnpm run build` (taskene
+`installerFrontend` og `byggFrontend`, via `npx`), så `./gradlew build` holder for å få med
+frontenden.
