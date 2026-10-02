@@ -1,6 +1,5 @@
 package no.nav.helse.sparkiv
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.navikt.tbd_libs.kafka.ConsumerProducerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
-import java.util.*
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 private val kafka =
     ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.7.1")).apply {
@@ -68,10 +67,10 @@ private fun dummyMeldinger(): List<DummyMelding> {
             "Fant ikke personSubsumsjon.json på classpath (forventet i src/test/resources)"
         }
     val meldinger = resource.use { mapper.readTree(it) }
-    return meldinger.map { melding ->
-        val vedtaksperiodeId = melding["vedtaksperiodeId"]?.asText() ?: "(ingen vedtaksperiodeId)"
-        val fødselsnummer = melding["fodselsnummer"].asText()
-        val eventName = melding["eventName"].asText()
+    return meldinger.values().map { melding ->
+        val vedtaksperiodeId = melding["vedtaksperiodeId"]?.asString() ?: "(ingen vedtaksperiodeId)"
+        val fødselsnummer = melding["fodselsnummer"].asString()
+        val eventName = melding["eventName"].asString()
         DummyMelding(vedtaksperiodeId, fødselsnummer, eventName, mapper.writeValueAsString(melding))
     }
 }
