@@ -1,12 +1,12 @@
 [versions]
-tbd-libs = "2025.09.19-15.24-1a9c113f"
-flyway = "11.13.1"
-postgres = "42.7.12"
-kotliquery = "1.9.0"
-hikaricp = "7.0.2"
-testcontainers = "2.0.3"
+tbd-libs = "20261002.1227"
+flyway = "13.8.0"
+postgres = "42.7.13"
+kotliquery = "1.9.1"
+hikaricp = "7.1.0"
+testcontainers = "2.0.5"
 logback = "1.6.4"
-logstash = "8.1"
+logstash = "9.0"
 sykepengerGradlePlugins = "20261001.1830"
 
 [libraries]
