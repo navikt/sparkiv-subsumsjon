@@ -16,14 +16,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.16.2",
-    "@navikt/ds-css": "^8.16.2",
-    "@navikt/ds-react": "^8.16.2",
+    "@navikt/aksel-icons": "^8.17.2",
+    "@navikt/ds-css": "^8.17.2",
+    "@navikt/ds-react": "^8.17.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
