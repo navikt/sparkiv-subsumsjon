@@ -5,7 +5,7 @@ registries:
     url: https://npm.pkg.github.com
     token: ${{ secrets.READER_TOKEN }}
 multi-ecosystem-groups:
-  avhengigheter:
+  dependencies:
     schedule:
       interval: "daily"
     commit-message:
@@ -13,7 +13,7 @@ multi-ecosystem-groups:
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    multi-ecosystem-group: "avhengigheter"
+    multi-ecosystem-group: "dependencies"
     patterns: ["*"]
     cooldown:
       default-days: 7
@@ -22,7 +22,7 @@ updates:
 
   - package-ecosystem: "gradle"
     directory: "/"
-    multi-ecosystem-group: "avhengigheter"
+    multi-ecosystem-group: "dependencies"
     patterns: ["*"]
     cooldown:
       default-days: 7
@@ -32,7 +32,7 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/frontend"
-    multi-ecosystem-group: "avhengigheter"
+    multi-ecosystem-group: "dependencies"
     patterns: ["*"]
     registries: "*"
     cooldown:
