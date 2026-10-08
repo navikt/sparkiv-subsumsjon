@@ -16,9 +16,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.17.2",
-    "@navikt/ds-css": "^8.17.2",
-    "@navikt/ds-react": "^8.17.2",
+    "@navikt/aksel-icons": "^8.18.0",
+    "@navikt/ds-css": "^8.18.0",
+    "@navikt/ds-react": "^8.18.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -30,6 +30,6 @@
     "only-allow": "1.2.2",
     "oxlint": "^1.86.0",
     "typescript": "~7.0.2",
-    "vite": "^8.3.1"
+    "vite": "^8.3.2"
   }
 }
