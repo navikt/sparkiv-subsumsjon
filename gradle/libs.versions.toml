@@ -1,11 +1,11 @@
 [versions]
 tbd-libs = "20261005.1432"
-flyway = "13.8.1"
+flyway = "13.9.0"
 postgres = "42.7.13"
 kotliquery = "1.9.1"
 hikaricp = "7.1.0"
 testcontainers = "2.0.5"
-logback = "1.6.4"
+logback = "1.6.5"
 logstash = "9.0"
 sykepengerGradlePlugins = "20261001.1830"
 
