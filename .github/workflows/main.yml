@@ -32,7 +32,7 @@ permissions:
 jobs:
   bygg-og-test:
     name: Bygg og test
-    uses: navikt/sykepenger-github-workflows/.github/workflows/bygg-og-test-med-gradle.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    uses: navikt/sykepenger-github-workflows/.github/workflows/bygg-og-test-med-gradle.yml@fc1bc4b862baacc4b4d8e0519bf3dc9040a2e644 # v1.0.11
     permissions:
       contents: read
 
@@ -85,7 +85,7 @@ jobs:
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Generer SBOM, attester og signer
-        uses: nais/attest-sign@fb682a4e2e92380274d6fd5332324831b62c1961 # v2.0.19
+        uses: nais/attest-sign@d511f0b4b086eba75c8845098c31c3a5386baecc # v2.0.20
         with:
           image_ref: ${{ steps.jib.outputs.ref }}
 
@@ -104,7 +104,7 @@ jobs:
   deploy-dev:
     name: Deploy til dev
     needs: bygg-image
-    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@fc1bc4b862baacc4b4d8e0519bf3dc9040a2e644 # v1.0.11
     with:
       manifest: .nais/sparkiv-subsumsjon.yaml
       environment: dev-gcp
@@ -116,7 +116,7 @@ jobs:
   deploy-prod:
     name: Deploy til prod
     needs: bygg-image
-    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@77c349d62b631cf0fedc02278c68abd33bc8ea5b # v1.0.10
+    uses: navikt/sykepenger-github-workflows/.github/workflows/deploy-v2.yml@fc1bc4b862baacc4b4d8e0519bf3dc9040a2e644 # v1.0.11
     with:
       manifest: .nais/sparkiv-subsumsjon.yaml
       environment: prod-gcp
