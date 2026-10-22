@@ -1,6 +1,6 @@
 [versions]
 tbd-libs = "20261013.1613"
-flyway = "13.10.0"
+flyway = "13.10.3"
 postgres = "42.7.14"
 kotliquery = "1.9.1"
 hikaricp = "7.1.0"
