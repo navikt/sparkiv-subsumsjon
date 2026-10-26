@@ -37,3 +37,7 @@ updates:
     registries: "*"
     cooldown:
       default-days: 7
+    ignore:
+      # @types/node må følge Node-versjonen i Dockerfile og CI, så major-versjoner holdes tilbake
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
