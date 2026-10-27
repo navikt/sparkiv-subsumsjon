@@ -7,7 +7,7 @@ hikaricp = "7.1.0"
 testcontainers = "2.0.5"
 logback = "1.6.5"
 logstash = "9.0"
-sykepengerGradlePlugins = "20261013.1718"
+sykepengerGradlePlugins = "20261026.1611"
 
 [libraries]
 kafka = { module = "com.github.navikt.tbd-libs:kafka", version.ref = "tbd-libs" }
