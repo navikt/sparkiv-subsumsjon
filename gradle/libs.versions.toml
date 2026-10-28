@@ -1,13 +1,13 @@
 [versions]
 tbd-libs = "20261013.1613"
-flyway = "13.10.3"
+flyway = "13.11.1"
 postgres = "42.7.14"
 kotliquery = "1.9.1"
 hikaricp = "7.1.0"
 testcontainers = "2.0.5"
 logback = "1.6.5"
 logstash = "9.0"
-sykepengerGradlePlugins = "20261026.1611"
+sykepengerGradlePlugins = "20261028.1441"
 
 [libraries]
 kafka = { module = "com.github.navikt.tbd-libs:kafka", version.ref = "tbd-libs" }
