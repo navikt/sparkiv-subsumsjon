@@ -1,5 +1,5 @@
 [versions]
-tbd-libs = "20261123.1112"
+tbd-libs = "20261125.1015"
 flyway = "13.12.2"
 postgres = "42.7.14"
 kotliquery = "1.9.1"
