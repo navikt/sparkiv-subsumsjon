@@ -85,7 +85,7 @@ jobs:
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Generer SBOM, attester og signer
-        uses: nais/attest-sign@68d64af4d2cfb089e99e350e0129f41bdcc1c491 # v2.1.6
+        uses: nais/attest-sign@7e00e8439c266ec6d28b7f429d607e35e20acf6f # v2.1.7
         with:
           image_ref: ${{ steps.jib.outputs.ref }}
 
